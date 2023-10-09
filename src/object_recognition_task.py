@@ -13,9 +13,9 @@ object_pub = rospy.Publisher('/object_detect', Empty, queue_size=1)
 
 def object_detect(self):
     #log("Starting Object Recognition", log_name)
-    tts_pub.publish('Start recognition')
+    tts_pub.publish('Im starting to recognize objects, please waiting a second')
     #face_pub.publish('littleHappy')
-    time.sleep(3)
+    time.sleep(1)
 
     rospy.logwarn("Waiting recognition")
     rospy.wait_for_service("services/objectDetection")
@@ -24,8 +24,8 @@ def object_detect(self):
     tts_pub.publish(f"i see {name_object.n_objects} objects in the shelves")
     
     #log("Number of objects detected", log_name)
-    time.sleep(2)
-    tts_pub.publish(f"i see {name_object.object_list}")
+    time.sleep(1)
+    tts_pub.publish(f"and i see {name_object.object_list}")
 
 
 if __name__ == "__main__":
