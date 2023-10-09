@@ -1,0 +1,7 @@
+<launch>
+    <node name="hotword" pkg="theta_speech" type="hotword_node.py" />
+    <node name="stt" pkg="theta_speech" type="stt_node.py" />
+    <node name="tts" pkg="theta_speech" type="tts_node.py" />
+    <node name="object_detect" pkg="theta_object_detect" type="object_node.py" />
+    <node name="object_recognition_task" pkg="theta_object_recognition_task" type="object_recognition_task.py" />
+</launch>

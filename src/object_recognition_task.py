@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 import rospy
 import rospkg
-import sys
 import os
-import cv2
 import os.path
 import time
 from datetime import datetime
 from theta_speech.srv import SpeechToText
+from theta_object_detect.srv import ObjectDetect, ObjectDetectResponse
 from std_msgs.msg import String, Empty
 
 
@@ -19,16 +18,6 @@ face_pub = rospy.Publisher('/hri/affective_loop', String, queue_size=10)
 hotword_pub = rospy.Publisher('/hotword_activate', Empty, queue_size=1)
 object_pub = rospy.Publisher('/object_detect', Empty, queue_size=1)
 
-def log(text, log_name, print_text=False, show_time=True):
-    now = datetime.now()
-
-    with open(log_name, "a+") as log_file:
-        log_text = now.strftime(f"[%H:%M:%S] {text}") if show_time else text
-        log_file.write(f"{log_text}\n")
-
-    if print_text:
-        print(text)
-
 def object_detect():
     now = datetime.now()
 
@@ -36,7 +25,7 @@ def object_detect():
     log_name = now.strftime("log_%H_%M_%S.txt")
     log_name = os.path.join(log_dir,log_name)
 
-    log("Starting Object Recognition", log_name)
+    #log("Starting Object Recognition", log_name)
 
     tts_pub.publish('Start recognition')
     face_pub.publish('littleHappy')
@@ -44,6 +33,14 @@ def object_detect():
 
     rospy.logwarn("Waiting recognition")
     object_pub.publish()
+    rospy.wait_for_service("services/objectDetection")
+    object_detection =  rospy.ServiceProxy("services/objectDetection", ObjectDetect)
+    name_object = object_detection()
+    tts_pub.publish(f"i see {name_object.n_objects} in the shelves")
+    
+    #log("Number of objects detected", log_name)
+    time.sleep(2)
+    tts_pub.publish(f"i see {name_object.list_object}")
 
 
 if __name__ == "__main__":
